@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,6 +57,7 @@
         <div class="result" id="result"></div>
     </div>
     <script>
+        // Define the probabilities and names for orange and purple items
         const orangeItems = {
             "Heart of Luen": 0.24,
             "Helmet of Luen": 0.36,
@@ -94,58 +94,88 @@
             "Yoyo Rat": 35.9 / 24
         };
 
-        const otherItemsChance = 62.6;
+        const otherItemsChance = 62.6; // Combined probability of other items
+
+        // Define the gem prices and the amount of gems included in each package
+        const gemPrices = [
+            { gems: 60, price: 1.39 },
+            { gems: 300 + 30, price: 6.99 },
+            { gems: 600 + 100, price: 13.99 },
+            { gems: 1500 + 300, price: 34.99 },
+            { gems: 3000 + 600, price: 69.99 },
+            { gems: 6000 + 1250, price: 139.99 }
+        ];
 
         function calculateGacha() {
+            // Get the number of chances from the input field
             const chances = parseInt(document.getElementById("chances").value);
+            const totalGems = chances * 90; // Calculate total gems needed
+            const { cost, packages } = calculateCost(totalGems); // Calculate total cost and package breakdown
             let resultText = "";
 
+            // Initialize counters for items
             let orangeCount = 0;
             let purpleCount = 0;
             let otherCount = 0;
             let orangeGuaranteeCounter = 90;
             let purpleGuaranteeCounter = 10;
 
+            // Initialize counters for guaranteed and random items
             let guaranteedOrangeCount = 0;
             let guaranteedPurpleCount = 0;
             let randomOrangeCount = 0;
             let randomPurpleCount = 0;
 
-            const itemCounts = {};
+            const itemCounts = {}; // To keep track of individual item counts
 
+            // Simulate gacha draws
             for (let i = 0; i < chances; i++) {
                 const random = Math.random() * 100;
 
                 if (orangeGuaranteeCounter <= 0) {
+                    // Guaranteed orange item
                     orangeCount++;
                     guaranteedOrangeCount++;
                     orangeGuaranteeCounter = 90;
                     addItemToCount(itemCounts, getRandomItem(orangeItems));
                 } else if (purpleGuaranteeCounter <= 0) {
+                    // Guaranteed purple item
                     purpleCount++;
                     guaranteedPurpleCount++;
                     purpleGuaranteeCounter = 10;
                     addItemToCount(itemCounts, getRandomItem(purpleItems));
                 } else if (random <= 1.5) {
+                    // Random orange item
                     orangeCount++;
                     randomOrangeCount++;
                     orangeGuaranteeCounter = 90;
                     addItemToCount(itemCounts, getRandomItem(orangeItems));
                 } else if (random <= 1.5 + 35.9) {
+                    // Random purple item
                     purpleCount++;
                     randomPurpleCount++;
                     purpleGuaranteeCounter = 10;
                     addItemToCount(itemCounts, getRandomItem(purpleItems));
                 } else {
+                    // Other item
                     otherCount++;
                     addItemToCount(itemCounts, "Other Item");
                 }
 
+                // Decrement guarantee counters
                 orangeGuaranteeCounter--;
                 purpleGuaranteeCounter--;
             }
 
+            // Build result text with detailed information
             resultText += `<div>Total Chances: ${chances}</div>`;
+            resultText += `<div>Total Cost: CAD ${cost.toFixed(2)}</div>`;
+            resultText += `<div>Total Gems Required: ${totalGems}</div>`;
+            resultText += `<div>Packages Required:</div><ul>`;
+            packages.forEach(pkg => {
+                resultText += `<li>${pkg.gems} gems for CAD ${pkg.price.toFixed(2)} x ${pkg.count}</li>`;
+            });
+            resultText += `</ul>`;
             resultText += `<div>Orange Quality Items: ${orangeCount} (Guaranteed: ${guaranteedOrangeCount}, Random: ${randomOrangeCount})</div>`;
             resultText += `<div>Purple Quality Items: ${purpleCount} (Guaranteed: ${guaranteedPurpleCount}, Random: ${randomPurpleCount})</div>`;
             resultText += `<div>Other Items: ${otherCount}</div>`;
@@ -160,6 +190,7 @@
             document.getElementById("result").innerHTML = resultText;
         }
 
+        // Function to add item to the count object
         function addItemToCount(itemCounts, item) {
             if (!itemCounts[item]) {
                 itemCounts[item] = 0;
@@ -167,9 +198,54 @@
             itemCounts[item]++;
         }
 
+        // Function to get a random item from the provided items object
         function getRandomItem(items) {
             const keys = Object.keys(items);
             return keys[Math.floor(Math.random() * keys.length)];
+        }
+
+        // Function to calculate the total cost and breakdown of gem packages needed
+        function calculateCost(gems) {
+            let totalCost = 0;
+            let packages = [];
+            while (gems > 0) {
+                if (gems >= 7250) {
+                    totalCost += 139.99;
+                    gems -= 7250;
+                    addPackage(packages, 7250, 139.99);
+                } else if (gems >= 3600) {
+                    totalCost += 69.99;
+                    gems -= 3600;
+                    addPackage(packages, 3600, 69.99);
+                } else if (gems >= 1800) {
+                    totalCost += 34.99;
+                    gems -= 1800;
+                    addPackage(packages, 1800, 34.99);
+                } else if (gems >= 700) {
+                    totalCost += 13.99;
+                    gems -= 700;
+                    addPackage(packages, 700, 13.99);
+                } else if (gems >= 330) {
+                    totalCost += 6.99;
+                    gems -= 330;
+                    addPackage(packages, 330, 6.99);
+                } else {
+                    totalCost += 1.39;
+                    gems -= 60;
+                    addPackage(packages, 60, 1.39);
+                }
+            }
+            return { cost: totalCost, packages: packages };
+        }
+
+        // Function to add gem package details to the packages array
+        function addPackage(packages, gems, price) {
+            const existingPackage = packages.find(pkg => pkg.gems === gems && pkg.price === price);
+            if (existingPackage) {
+                existingPackage.count++;
+            } else {
+                packages.push({ gems: gems, price: price, count: 1 });
+            }
         }
     </script>
 </body>
