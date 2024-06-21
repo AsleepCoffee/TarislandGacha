@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Gacha System Calculator</title>
+    <title>Reward of Destiny Calculator</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -17,6 +17,10 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
         }
         h2 {
             color: #444;
@@ -46,18 +50,85 @@
             margin-top: 10px;
             font-size: 14px;
         }
+        .specific-item {
+            margin-top: 10px;
+        }
+        .orange-item {
+            color: orange;
+        }
+        .purple-item {
+            color: purple;
+        }
+        .blue-item {
+            color: blue;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>Reward of Destiny Calculator</h1>
         <h2>Gacha System Calculator</h2>
         <p>Enter the number of chances you want to simulate:</p>
         <input type="number" id="chances" value="100">
+        <div class="specific-item">
+            <input type="checkbox" id="specificItemCheck" onclick="toggleSpecificItem()">
+            <label for="specificItemCheck">Going for a specific item?</label>
+            <select id="specificItem" style="display:none;">
+                <optgroup label="Orange Items">
+                    <option value="Heart of Luen">Heart of Luen</option>
+                    <option value="Helmet of Luen">Helmet of Luen</option>
+                    <option value="Mount: Wings of Luen">Mount: Wings of Luen</option>
+                    <option value="Luen Weapon">Luen Weapon</option>
+                    <option value="Spirit of Luen">Spirit of Luen</option>
+                </optgroup>
+                <optgroup label="Purple Items">
+                    <option value="Pendants: Butterfly Dance">Pendants: Butterfly Dance</option>
+                    <option value="Butterfly Dance (Ice)">Butterfly Dance (Ice)</option>
+                    <option value="Butterfly Dance (Soul)">Butterfly Dance (Soul)</option>
+                    <option value="Little White Rabbit">Little White Rabbit</option>
+                    <option value="Moon Dream">Moon Dream</option>
+                    <option value="Starmoon Mark">Starmoon Mark</option>
+                    <option value="Question Mark">Question Mark</option>
+                    <option value="Bitter Rain">Bitter Rain</option>
+                    <option value="Bifrost">Bifrost</option>
+                    <option value="Dispelled Mist">Dispelled Mist</option>
+                    <option value="Tablet of Heroism">Tablet of Heroism</option>
+                    <option value="Not My Fault">Not My Fault</option>
+                    <option value="Wait for Me">Wait for Me</option>
+                    <option value="I Will Be Back">I Will Be Back</option>
+                    <option value="Oak Boy">Oak Boy</option>
+                    <option value="Night Shadow">Night Shadow</option>
+                    <option value="Heracles">Heracles</option>
+                    <option value="Chipmunk">Chipmunk</option>
+                    <option value="Frostfox">Frostfox</option>
+                    <option value="Drilling Rat">Drilling Rat</option>
+                    <option value="Weasel">Weasel</option>
+                    <option value="Jungle Iguana">Jungle Iguana</option>
+                    <option value="Ferret">Ferret</option>
+                    <option value="Phantom Fox">Phantom Fox</option>
+                    <option value="Yoyo Rat">Yoyo Rat</option>
+                </optgroup>
+                <optgroup label="Blue Items">
+                    <option value="Silver Coin Chest">Silver Coin Chest</option>
+                    <option value="Bionic Bait">Bionic Bait</option>
+                    <option value="Icethrower">Icethrower</option>
+                    <option value="Flamethrower">Flamethrower</option>
+                    <option value="Magic Stairs">Magic Stairs</option>
+                    <option value="Starlight Melody">Starlight Melody</option>
+                    <option value="Ducky Seesaw">Ducky Seesaw</option>
+                    <option value="Coo-coo Rocking Chair">Coo-coo Rocking Chair</option>
+                    <option value="Balloon Swing">Balloon Swing</option>
+                    <option value="Cloud Swing">Cloud Swing</option>
+                    <option value="Merfolk Orb I">Merfolk Orb I</option>
+                    <option value="Merfolk Orb II">Merfolk Orb II</option>
+                    <option value="Merfolk Orb III">Merfolk Orb III</option>
+                </optgroup>
+            </select>
+        </div>
         <button onclick="calculateGacha()">Calculate</button>
         <div class="result" id="result"></div>
     </div>
     <script>
-        // Define the probabilities and names for orange and purple items
         const orangeItems = {
             "Heart of Luen": 0.24,
             "Helmet of Luen": 0.36,
@@ -77,11 +148,11 @@
             "Bitter Rain": 35.9 / 24,
             "Bifrost": 35.9 / 24,
             "Dispelled Mist": 35.9 / 24,
-            "Accessory: Tablet of Heroism": 35.9 / 24,
+            "Tablet of Heroism": 35.9 / 24,
             "Not My Fault": 35.9 / 24,
             "Wait for Me": 35.9 / 24,
             "I Will Be Back": 35.9 / 24,
-            "Pets: Oak Boy": 35.9 / 24,
+            "Oak Boy": 35.9 / 24,
             "Night Shadow": 35.9 / 24,
             "Heracles": 35.9 / 24,
             "Chipmunk": 35.9 / 24,
@@ -94,75 +165,125 @@
             "Yoyo Rat": 35.9 / 24
         };
 
-        const otherItemsChance = 62.6; // Combined probability of other items
+        const blueItems = {
+            "Silver Coin Chest": 62.6 / 13, // 13 items in the blue category
+            "Bionic Bait": 62.6 / 13,
+            "Icethrower": 62.6 / 13,
+            "Flamethrower": 62.6 / 13,
+            "Magic Stairs": 62.6 / 13,
+            "Starlight Melody": 62.6 / 13,
+            "Ducky Seesaw": 62.6 / 13,
+            "Coo-coo Rocking Chair": 62.6 / 13,
+            "Balloon Swing": 62.6 / 13,
+            "Cloud Swing": 62.6 / 13,
+            "Merfolk Orb I": 62.6 / 13,
+            "Merfolk Orb II": 62.6 / 13,
+            "Merfolk Orb III": 62.6 / 13
+        };
 
-        // Define the gem prices and the amount of gems included in each package
         const gemPrices = [
             { gems: 60, price: 1.39 },
-            { gems: 300 + 30, price: 6.99 },
-            { gems: 600 + 100, price: 13.99 },
-            { gems: 1500 + 300, price: 34.99 },
-            { gems: 3000 + 600, price: 69.99 },
-            { gems: 6000 + 1250, price: 139.99 }
+            { gems: 330, price: 6.99 },
+            { gems: 700, price: 13.99 },
+            { gems: 1800, price: 34.99 },
+            { gems: 3600, price: 69.99 },
+            { gems: 7250, price: 139.99 }
         ];
 
+        function toggleSpecificItem() {
+            const specificItemCheck = document.getElementById("specificItemCheck");
+            const specificItemSelect = document.getElementById("specificItem");
+            if (specificItemCheck.checked) {
+                specificItemSelect.style.display = "block";
+            } else {
+                specificItemSelect.style.display = "none";
+            }
+        }
+
         function calculateGacha() {
-            // Get the number of chances from the input field
             const chances = parseInt(document.getElementById("chances").value);
-            const totalGems = chances * 90; // Calculate total gems needed
-            const { cost, packages } = calculateCost(totalGems); // Calculate total cost and package breakdown
+            const totalGems = chances * 90;
+            const { cost, packages } = calculateCost(totalGems);
             let resultText = "";
 
-            // Initialize counters for items
             let orangeCount = 0;
             let purpleCount = 0;
-            let otherCount = 0;
+            let blueCount = 0;
             let orangeGuaranteeCounter = 90;
             let purpleGuaranteeCounter = 10;
 
-            // Initialize counters for guaranteed and random items
             let guaranteedOrangeCount = 0;
             let guaranteedPurpleCount = 0;
             let randomOrangeCount = 0;
             let randomPurpleCount = 0;
 
-            const itemCounts = {}; // To keep track of individual item counts
+            const itemCounts = { orange: {}, purple: {}, blue: {} };
+            let specificItemCount = 0;
+            let specificItemProbability = 0;
+
+            const specificItemCheck = document.getElementById("specificItemCheck").checked;
+            const specificItem = document.getElementById("specificItem").value;
+
+            // Determine the probability of the specific item
+            if (specificItemCheck) {
+                if (orangeItems[specificItem]) {
+                    specificItemProbability = orangeItems[specificItem];
+                } else if (purpleItems[specificItem]) {
+                    specificItemProbability = purpleItems[specificItem];
+                } else if (blueItems[specificItem]) {
+                    specificItemProbability = blueItems[specificItem];
+                }
+            }
 
             // Simulate gacha draws
             for (let i = 0; i < chances; i++) {
                 const random = Math.random() * 100;
 
                 if (orangeGuaranteeCounter <= 0) {
-                    // Guaranteed orange item
                     orangeCount++;
                     guaranteedOrangeCount++;
                     orangeGuaranteeCounter = 90;
-                    addItemToCount(itemCounts, getRandomItem(orangeItems));
+                    const item = getRandomItem(orangeItems);
+                    addItemToCount(itemCounts.orange, item);
+                    if (item === specificItem) {
+                        specificItemCount++;
+                    }
                 } else if (purpleGuaranteeCounter <= 0) {
-                    // Guaranteed purple item
                     purpleCount++;
                     guaranteedPurpleCount++;
                     purpleGuaranteeCounter = 10;
-                    addItemToCount(itemCounts, getRandomItem(purpleItems));
+                    const item = getRandomItem(purpleItems);
+                    addItemToCount(itemCounts.purple, item);
+                    if (item === specificItem) {
+                        specificItemCount++;
+                    }
                 } else if (random <= 1.5) {
-                    // Random orange item
                     orangeCount++;
                     randomOrangeCount++;
                     orangeGuaranteeCounter = 90;
-                    addItemToCount(itemCounts, getRandomItem(orangeItems));
+                    const item = getRandomItem(orangeItems);
+                    addItemToCount(itemCounts.orange, item);
+                    if (item === specificItem) {
+                        specificItemCount++;
+                    }
                 } else if (random <= 1.5 + 35.9) {
-                    // Random purple item
                     purpleCount++;
                     randomPurpleCount++;
                     purpleGuaranteeCounter = 10;
-                    addItemToCount(itemCounts, getRandomItem(purpleItems));
+                    const item = getRandomItem(purpleItems);
+                    addItemToCount(itemCounts.purple, item);
+                    if (item === specificItem) {
+                        specificItemCount++;
+                    }
                 } else {
-                    // Other item
-                    otherCount++;
-                    addItemToCount(itemCounts, "Other Item");
+                    blueCount++;
+                    const item = getRandomItem(blueItems);
+                    addItemToCount(itemCounts.blue, item);
+                    if (item === specificItem) {
+                        specificItemCount++;
+                    }
                 }
 
-                // Decrement guarantee counters
                 orangeGuaranteeCounter--;
                 purpleGuaranteeCounter--;
             }
@@ -178,19 +299,37 @@
             resultText += `</ul>`;
             resultText += `<div>Orange Quality Items: ${orangeCount} (Guaranteed: ${guaranteedOrangeCount}, Random: ${randomOrangeCount})</div>`;
             resultText += `<div>Purple Quality Items: ${purpleCount} (Guaranteed: ${guaranteedPurpleCount}, Random: ${randomPurpleCount})</div>`;
-            resultText += `<div>Other Items: ${otherCount}</div>`;
+            resultText += `<div>Blue Quality Items: ${blueCount}</div>`;
+
+            if (specificItemCheck) {
+                const probability = 1 - Math.pow(1 - specificItemProbability / 100, chances);
+                resultText += `<div>Chances to get "${specificItem}": ${specificItemCount}</div>`;
+                resultText += `<div>Probability of getting "${specificItem}" in ${chances} chances: ${(probability * 100).toFixed(2)}%</div>`;
+                resultText += `<div>Cost to guarantee 100% chance for "${specificItem}": CAD ${(calculateCost(Math.ceil(1 / (specificItemProbability / 100)) * 90).cost).toFixed(2)}</div>`;
+            }
+
             resultText += `<br><div><strong>Item Details:</strong></div>`;
             resultText += `<div class="item-details">`;
 
-            for (const item in itemCounts) {
-                resultText += `${item}: ${itemCounts[item]}<br>`;
+            resultText += `<div class="orange-item"><strong>Orange Items:</strong></div>`;
+            for (const item in itemCounts.orange) {
+                resultText += `<div class="orange-item">${item}: ${itemCounts.orange[item]}</div>`;
+            }
+
+            resultText += `<div class="purple-item"><strong>Purple Items:</strong></div>`;
+            for (const item in itemCounts.purple) {
+                resultText += `<div class="purple-item">${item}: ${itemCounts.purple[item]}</div>`;
+            }
+
+            resultText += `<div class="blue-item"><strong>Blue Items:</strong></div>`;
+            for (const item in itemCounts.blue) {
+                resultText += `<div class="blue-item">${item}: ${itemCounts.blue[item]}</div>`;
             }
 
             resultText += `</div>`;
             document.getElementById("result").innerHTML = resultText;
         }
 
-        // Function to add item to the count object
         function addItemToCount(itemCounts, item) {
             if (!itemCounts[item]) {
                 itemCounts[item] = 0;
@@ -198,13 +337,11 @@
             itemCounts[item]++;
         }
 
-        // Function to get a random item from the provided items object
         function getRandomItem(items) {
             const keys = Object.keys(items);
             return keys[Math.floor(Math.random() * keys.length)];
         }
 
-        // Function to calculate the total cost and breakdown of gem packages needed
         function calculateCost(gems) {
             let totalCost = 0;
             let packages = [];
@@ -238,7 +375,6 @@
             return { cost: totalCost, packages: packages };
         }
 
-        // Function to add gem package details to the packages array
         function addPackage(packages, gems, price) {
             const existingPackage = packages.find(pkg => pkg.gems === gems && pkg.price === price);
             if (existingPackage) {
