@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gacha System Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        h2 {
+            color: #444;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        .item-details {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Gacha System Calculator</h2>
+        <p>Enter the number of chances you want to simulate:</p>
+        <input type="number" id="chances" value="100">
+        <button onclick="calculateGacha()">Calculate</button>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        const orangeItems = {
+            "Heart of Luen": 0.24,
+            "Helmet of Luen": 0.36,
+            "Mount: Wings of Luen": 0.12,
+            "Luen Weapon": 0.3,
+            "Spirit of Luen": 0.48
+        };
+
+        const purpleItems = {
+            "Pendants: Butterfly Dance": 35.9 / 24, // 24 items in purple category
+            "Butterfly Dance (Ice)": 35.9 / 24,
+            "Butterfly Dance (Soul)": 35.9 / 24,
+            "Little White Rabbit": 35.9 / 24,
+            "Moon Dream": 35.9 / 24,
+            "Starmoon Mark": 35.9 / 24,
+            "Question Mark": 35.9 / 24,
+            "Bitter Rain": 35.9 / 24,
+            "Bifrost": 35.9 / 24,
+            "Dispelled Mist": 35.9 / 24,
+            "Accessory: Tablet of Heroism": 35.9 / 24,
+            "Not My Fault": 35.9 / 24,
+            "Wait for Me": 35.9 / 24,
+            "I Will Be Back": 35.9 / 24,
+            "Pets: Oak Boy": 35.9 / 24,
+            "Night Shadow": 35.9 / 24,
+            "Heracles": 35.9 / 24,
+            "Chipmunk": 35.9 / 24,
+            "Frostfox": 35.9 / 24,
+            "Drilling Rat": 35.9 / 24,
+            "Weasel": 35.9 / 24,
+            "Jungle Iguana": 35.9 / 24,
+            "Ferret": 35.9 / 24,
+            "Phantom Fox": 35.9 / 24,
+            "Yoyo Rat": 35.9 / 24
+        };
+
+        const otherItemsChance = 62.6;
+
+        function calculateGacha() {
+            const chances = parseInt(document.getElementById("chances").value);
+            let resultText = "";
+
+            let orangeCount = 0;
+            let purpleCount = 0;
+            let otherCount = 0;
+            let orangeGuaranteeCounter = 90;
+            let purpleGuaranteeCounter = 10;
+
+            let guaranteedOrangeCount = 0;
+            let guaranteedPurpleCount = 0;
+            let randomOrangeCount = 0;
+            let randomPurpleCount = 0;
+
+            const itemCounts = {};
+
+            for (let i = 0; i < chances; i++) {
+                const random = Math.random() * 100;
+
+                if (orangeGuaranteeCounter <= 0) {
+                    orangeCount++;
+                    guaranteedOrangeCount++;
+                    orangeGuaranteeCounter = 90;
+                    addItemToCount(itemCounts, getRandomItem(orangeItems));
+                } else if (purpleGuaranteeCounter <= 0) {
+                    purpleCount++;
+                    guaranteedPurpleCount++;
+                    purpleGuaranteeCounter = 10;
+                    addItemToCount(itemCounts, getRandomItem(purpleItems));
+                } else if (random <= 1.5) {
+                    orangeCount++;
+                    randomOrangeCount++;
+                    orangeGuaranteeCounter = 90;
+                    addItemToCount(itemCounts, getRandomItem(orangeItems));
+                } else if (random <= 1.5 + 35.9) {
+                    purpleCount++;
+                    randomPurpleCount++;
+                    purpleGuaranteeCounter = 10;
+                    addItemToCount(itemCounts, getRandomItem(purpleItems));
+                } else {
+                    otherCount++;
+                    addItemToCount(itemCounts, "Other Item");
+                }
+
+                orangeGuaranteeCounter--;
+                purpleGuaranteeCounter--;
+            }
+
+            resultText += `<div>Total Chances: ${chances}</div>`;
+            resultText += `<div>Orange Quality Items: ${orangeCount} (Guaranteed: ${guaranteedOrangeCount}, Random: ${randomOrangeCount})</div>`;
+            resultText += `<div>Purple Quality Items: ${purpleCount} (Guaranteed: ${guaranteedPurpleCount}, Random: ${randomPurpleCount})</div>`;
+            resultText += `<div>Other Items: ${otherCount}</div>`;
+            resultText += `<br><div><strong>Item Details:</strong></div>`;
+            resultText += `<div class="item-details">`;
+
+            for (const item in itemCounts) {
+                resultText += `${item}: ${itemCounts[item]}<br>`;
+            }
+
+            resultText += `</div>`;
+            document.getElementById("result").innerHTML = resultText;
+        }
+
+        function addItemToCount(itemCounts, item) {
+            if (!itemCounts[item]) {
+                itemCounts[item] = 0;
+            }
+            itemCounts[item]++;
+        }
+
+        function getRandomItem(items) {
+            const keys = Object.keys(items);
+            return keys[Math.floor(Math.random() * keys.length)];
+        }
+    </script>
+</body>
+</html>
