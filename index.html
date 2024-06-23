@@ -17,13 +17,16 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
+            text-align: center;
         }
         h1 {
             text-align: center;
             color: #333;
+            font-size: 24px;
         }
         h2 {
             color: #444;
+            font-size: 20px;
         }
         input[type="number"] {
             width: 100px;
@@ -53,6 +56,9 @@
         .specific-item {
             margin-top: 10px;
         }
+        .arc-calculation, .pray-calculation {
+            margin-top: 10px;
+        }
         .orange-item {
             color: orange;
         }
@@ -62,70 +68,98 @@
         .blue-item {
             color: blue;
         }
+        .ascii-art {
+            font-family: monospace;
+            color: #007bff;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Reward of Destiny Calculator</h1>
-        <h2>Gacha System Calculator</h2>
-        <p>Enter the number of chances you want to simulate:</p>
-        <input type="number" id="chances" value="100">
-        <div class="specific-item">
-            <input type="checkbox" id="specificItemCheck" onclick="toggleSpecificItem()">
-            <label for="specificItemCheck">Going for a specific item?</label>
-            <select id="specificItem" style="display:none;">
-                <optgroup label="Orange Items">
-                    <option value="Heart of Luen">Heart of Luen</option>
-                    <option value="Helmet of Luen">Helmet of Luen</option>
-                    <option value="Mount: Wings of Luen">Mount: Wings of Luen</option>
-                    <option value="Luen Weapon">Luen Weapon</option>
-                    <option value="Spirit of Luen">Spirit of Luen</option>
-                </optgroup>
-                <optgroup label="Purple Items">
-                    <option value="Pendants: Butterfly Dance">Pendants: Butterfly Dance</option>
-                    <option value="Butterfly Dance (Ice)">Butterfly Dance (Ice)</option>
-                    <option value="Butterfly Dance (Soul)">Butterfly Dance (Soul)</option>
-                    <option value="Little White Rabbit">Little White Rabbit</option>
-                    <option value="Moon Dream">Moon Dream</option>
-                    <option value="Starmoon Mark">Starmoon Mark</option>
-                    <option value="Question Mark">Question Mark</option>
-                    <option value="Bitter Rain">Bitter Rain</option>
-                    <option value="Bifrost">Bifrost</option>
-                    <option value="Dispelled Mist">Dispelled Mist</option>
-                    <option value="Tablet of Heroism">Tablet of Heroism</option>
-                    <option value="Not My Fault">Not My Fault</option>
-                    <option value="Wait for Me">Wait for Me</option>
-                    <option value="I Will Be Back">I Will Be Back</option>
-                    <option value="Oak Boy">Oak Boy</option>
-                    <option value="Night Shadow">Night Shadow</option>
-                    <option value="Heracles">Heracles</option>
-                    <option value="Chipmunk">Chipmunk</option>
-                    <option value="Frostfox">Frostfox</option>
-                    <option value="Drilling Rat">Drilling Rat</option>
-                    <option value="Weasel">Weasel</option>
-                    <option value="Jungle Iguana">Jungle Iguana</option>
-                    <option value="Ferret">Ferret</option>
-                    <option value="Phantom Fox">Phantom Fox</option>
-                    <option value="Yoyo Rat">Yoyo Rat</option>
-                </optgroup>
-                <optgroup label="Blue Items">
-                    <option value="Silver Coin Chest">Silver Coin Chest</option>
-                    <option value="Bionic Bait">Bionic Bait</option>
-                    <option value="Icethrower">Icethrower</option>
-                    <option value="Flamethrower">Flamethrower</option>
-                    <option value="Magic Stairs">Magic Stairs</option>
-                    <option value="Starlight Melody">Starlight Melody</option>
-                    <option value="Ducky Seesaw">Ducky Seesaw</option>
-                    <option value="Coo-coo Rocking Chair">Coo-coo Rocking Chair</option>
-                    <option value="Balloon Swing">Balloon Swing</option>
-                    <option value="Cloud Swing">Cloud Swing</option>
-                    <option value="Merfolk Orb I">Merfolk Orb I</option>
-                    <option value="Merfolk Orb II">Merfolk Orb II</option>
-                    <option value="Merfolk Orb III">Merfolk Orb III</option>
-                </optgroup>
-            </select>
+        <div class="ascii-art">
+            <pre>
+  _____         .__                       _________         _____  _____              
+ /  _  \   _____|  |   ____   ____ ______ \_   ___ \  _____/ ____\/ ____\____   ____  
+/  /_\  \ /  ___/  | _/ __ \_/ __ \\____ \/    \  \/ /  _ \   __\\   __\/ __ \_/ __ \ 
+/    |    \\___ \|  |_\  ___/\  ___/|  |_> >     \___(  <_> )  |   |  | \  ___/\  ___/ 
+\____|__  /____  >____/\___  >\___  >   __/ \______  /\____/|__|   |__|  \___  >\___  >
+        \/     \/          \/     \/|__|           \/                        \/     \/  
+            </pre>
         </div>
-        <button onclick="calculateGacha()">Calculate</button>
+        <div>
+            <input type="radio" id="calcPray" name="calcType" value="pray" onclick="toggleCalculationType()">
+            <label for="calcPray">Calculate Pray Chances</label>
+            <input type="radio" id="calcArcs" name="calcType" value="arcs" onclick="toggleCalculationType()">
+            <label for="calcArcs">Calculate Arcs of Destiny Needed</label>
+        </div>
+        <div class="pray-calculation" id="prayCalculation" style="display:none;">
+            <h2>Pray System Calculator</h2>
+            <p>Enter the number of pray chances you want to simulate:</p>
+            <input type="number" id="chances" value="100">
+            <div class="specific-item">
+                <input type="checkbox" id="specificItemCheck" onclick="toggleSpecificItem()">
+                <label for="specificItemCheck">Going for a specific item?</label>
+                <select id="specificItem" style="display:none;">
+                    <optgroup label="Orange Items">
+                        <option value="Heart of Luen">Heart of Luen</option>
+                        <option value="Helmet of Luen">Helmet of Luen</option>
+                        <option value="Mount: Wings of Luen">Mount: Wings of Luen</option>
+                        <option value="Luen Weapon">Luen Weapon</option>
+                        <option value="Spirit of Luen">Spirit of Luen</option>
+                    </optgroup>
+                    <optgroup label="Purple Items">
+                        <option value="Pendants: Butterfly Dance">Pendants: Butterfly Dance</option>
+                        <option value="Butterfly Dance (Ice)">Butterfly Dance (Ice)</option>
+                        <option value="Butterfly Dance (Soul)">Butterfly Dance (Soul)</option>
+                        <option value="Little White Rabbit">Little White Rabbit</option>
+                        <option value="Moon Dream">Moon Dream</option>
+                        <option value="Starmoon Mark">Starmoon Mark</option>
+                        <option value="Question Mark">Question Mark</option>
+                        <option value="Bitter Rain">Bitter Rain</option>
+                        <option value="Bifrost">Bifrost</option>
+                        <option value="Dispelled Mist">Dispelled Mist</option>
+                        <option value="Tablet of Heroism">Tablet of Heroism</option>
+                        <option value="Not My Fault">Not My Fault</option>
+                        <option value="Wait for Me">Wait for Me</option>
+                        <option value="I Will Be Back">I Will Be Back</option>
+                        <option value="Oak Boy">Oak Boy</option>
+                        <option value="Night Shadow">Night Shadow</option>
+                        <option value="Heracles">Heracles</option>
+                        <option value="Chipmunk">Chipmunk</option>
+                        <option value="Frostfox">Frostfox</option>
+                        <option value="Drilling Rat">Drilling Rat</option>
+                        <option value="Weasel">Weasel</option>
+                        <option value="Jungle Iguana">Jungle Iguana</option>
+                        <option value="Ferret">Ferret</option>
+                        <option value="Phantom Fox">Phantom Fox</option>
+                        <option value="Yoyo Rat">Yoyo Rat</option>
+                    </optgroup>
+                    <optgroup label="Blue Items">
+                        <option value="Silver Coin Chest">Silver Coin Chest</option>
+                        <option value="Bionic Bait">Bionic Bait</option>
+                        <option value="Icethrower">Icethrower</option>
+                        <option value="Flamethrower">Flamethrower</option>
+                        <option value="Magic Stairs">Magic Stairs</option>
+                        <option value="Starlight Melody">Starlight Melody</option>
+                        <option value="Ducky Seesaw">Ducky Seesaw</option>
+                        <option value="Coo-coo Rocking Chair">Coo-coo Rocking Chair</option>
+                        <option value="Balloon Swing">Balloon Swing</option>
+                        <option value="Cloud Swing">Cloud Swing</option>
+                        <option value="Merfolk Orb I">Merfolk Orb I</option>
+                        <option value="Merfolk Orb II">Merfolk Orb II</option>
+                        <option value="Merfolk Orb III">Merfolk Orb III</option>
+                    </optgroup>
+                </select>
+            </div>
+            <button onclick="calculatePray()">Calculate</button>
+        </div>
+        <div class="arc-calculation" id="arcCalculation" style="display:none;">
+            <h2>Arc of Destiny Calculation</h2>
+            <p>Enter the number of Arcs of Destiny you are going for:</p>
+            <input type="number" id="arcTarget" value="100">
+            <button onclick="calculateArcsNeeded()">Calculate</button>
+        </div>
         <div class="result" id="result"></div>
     </div>
     <script>
@@ -181,14 +215,23 @@
             "Merfolk Orb III": 62.6 / 13
         };
 
-        const gemPrices = [
-            { gems: 60, price: 1.39 },
-            { gems: 330, price: 6.99 },
-            { gems: 700, price: 13.99 },
-            { gems: 1800, price: 34.99 },
-            { gems: 3600, price: 69.99 },
-            { gems: 7250, price: 139.99 }
+        const arcPrices = [
+            { arcs: 60, price: 1.39 },
+            { arcs: 330, price: 6.99 },
+            { arcs: 700, price: 13.99 },
+            { arcs: 1800, price: 34.99 },
+            { arcs: 3600, price: 69.99 },
+            { arcs: 7250, price: 139.99 }
         ];
+
+        const purplePets = ["Oak Boy", "Night Shadow", "Heracles", "Chipmunk", "Frostfox", "Drilling Rat", "Weasel", "Jungle Iguana", "Ferret", "Phantom Fox", "Yoyo Rat"];
+
+        function toggleCalculationType() {
+            const calcType = document.querySelector('input[name="calcType"]:checked').value;
+            document.getElementById("prayCalculation").style.display = calcType === "pray" ? "block" : "none";
+            document.getElementById("arcCalculation").style.display = calcType === "arcs" ? "block" : "none";
+            document.getElementById("result").innerHTML = "";
+        }
 
         function toggleSpecificItem() {
             const specificItemCheck = document.getElementById("specificItemCheck");
@@ -200,10 +243,10 @@
             }
         }
 
-        function calculateGacha() {
+        function calculatePray() {
             const chances = parseInt(document.getElementById("chances").value);
-            const totalGems = chances * 90;
-            const { cost, packages } = calculateCost(totalGems);
+            const totalCrystals = chances * 90;
+            const { cost, packages } = calculateCost(totalCrystals);
             let resultText = "";
 
             let orangeCount = 0;
@@ -216,6 +259,8 @@
             let guaranteedPurpleCount = 0;
             let randomOrangeCount = 0;
             let randomPurpleCount = 0;
+
+            let arcOfDestinyCount = 0;
 
             const itemCounts = { orange: {}, purple: {}, blue: {} };
             let specificItemCount = 0;
@@ -235,13 +280,14 @@
                 }
             }
 
-            // Simulate gacha draws
+            // Simulate pray chances
             for (let i = 0; i < chances; i++) {
                 const random = Math.random() * 100;
 
                 if (orangeGuaranteeCounter <= 0) {
                     orangeCount++;
                     guaranteedOrangeCount++;
+                    arcOfDestinyCount += 40;
                     orangeGuaranteeCounter = 90;
                     const item = getRandomItem(orangeItems);
                     addItemToCount(itemCounts.orange, item);
@@ -251,6 +297,10 @@
                 } else if (purpleGuaranteeCounter <= 0) {
                     purpleCount++;
                     guaranteedPurpleCount++;
+                    arcOfDestinyCount += 2;
+                    if (purplePets.includes(getRandomItem(purpleItems))) {
+                        arcOfDestinyCount += 1;
+                    }
                     purpleGuaranteeCounter = 10;
                     const item = getRandomItem(purpleItems);
                     addItemToCount(itemCounts.purple, item);
@@ -260,6 +310,7 @@
                 } else if (random <= 1.5) {
                     orangeCount++;
                     randomOrangeCount++;
+                    arcOfDestinyCount += 40;
                     orangeGuaranteeCounter = 90;
                     const item = getRandomItem(orangeItems);
                     addItemToCount(itemCounts.orange, item);
@@ -269,6 +320,10 @@
                 } else if (random <= 1.5 + 35.9) {
                     purpleCount++;
                     randomPurpleCount++;
+                    arcOfDestinyCount += 2;
+                    if (purplePets.includes(getRandomItem(purpleItems))) {
+                        arcOfDestinyCount += 1;
+                    }
                     purpleGuaranteeCounter = 10;
                     const item = getRandomItem(purpleItems);
                     addItemToCount(itemCounts.purple, item);
@@ -277,6 +332,7 @@
                     }
                 } else {
                     blueCount++;
+                    arcOfDestinyCount += 1;
                     const item = getRandomItem(blueItems);
                     addItemToCount(itemCounts.blue, item);
                     if (item === specificItem) {
@@ -289,23 +345,25 @@
             }
 
             // Build result text with detailed information
-            resultText += `<div>Total Chances: ${chances}</div>`;
+            resultText += `<div>Total Pray Chances: ${chances}</div>`;
             resultText += `<div>Total Cost: CAD ${cost.toFixed(2)}</div>`;
-            resultText += `<div>Total Gems Required: ${totalGems}</div>`;
+            resultText += `<div>Total Crystals Required: ${totalCrystals}</div>`;
             resultText += `<div>Packages Required:</div><ul>`;
             packages.forEach(pkg => {
-                resultText += `<li>${pkg.gems} gems for CAD ${pkg.price.toFixed(2)} x ${pkg.count}</li>`;
+                resultText += `<li>${pkg.arcs} crystals for CAD ${pkg.price.toFixed(2)} x ${pkg.count}</li>`;
             });
             resultText += `</ul>`;
             resultText += `<div>Orange Quality Items: ${orangeCount} (Guaranteed: ${guaranteedOrangeCount}, Random: ${randomOrangeCount})</div>`;
             resultText += `<div>Purple Quality Items: ${purpleCount} (Guaranteed: ${guaranteedPurpleCount}, Random: ${randomPurpleCount})</div>`;
             resultText += `<div>Blue Quality Items: ${blueCount}</div>`;
+            resultText += `<div>Total Arcs of Destiny Obtained: ${arcOfDestinyCount}</div>`;
 
             if (specificItemCheck) {
-                const probability = 1 - Math.pow(1 - specificItemProbability / 100, chances);
+                let probability = 1 - Math.pow(1 - specificItemProbability / 100, chances);
+                probability = Math.min(probability, 0.98); // Cap probability at 98%
                 resultText += `<div>Chances to get "${specificItem}": ${specificItemCount}</div>`;
                 resultText += `<div>Probability of getting "${specificItem}" in ${chances} chances: ${(probability * 100).toFixed(2)}%</div>`;
-                resultText += `<div>Cost to guarantee 100% chance for "${specificItem}": CAD ${(calculateCost(Math.ceil(1 / (specificItemProbability / 100)) * 90).cost).toFixed(2)}</div>`;
+                resultText += `<div>Cost to guarantee 98% chance for "${specificItem}": CAD ${(calculateCost(Math.ceil(Math.log(0.02) / Math.log(1 - specificItemProbability / 100)) * 90).cost).toFixed(2)}</div>`;
             }
 
             resultText += `<br><div><strong>Item Details:</strong></div>`;
@@ -342,46 +400,86 @@
             return keys[Math.floor(Math.random() * keys.length)];
         }
 
-        function calculateCost(gems) {
+        function calculateCost(arcs) {
             let totalCost = 0;
             let packages = [];
-            while (gems > 0) {
-                if (gems >= 7250) {
+            while (arcs > 0) {
+                if (arcs >= 7250) {
                     totalCost += 139.99;
-                    gems -= 7250;
+                    arcs -= 7250;
                     addPackage(packages, 7250, 139.99);
-                } else if (gems >= 3600) {
+                } else if (arcs >= 3600) {
                     totalCost += 69.99;
-                    gems -= 3600;
+                    arcs -= 3600;
                     addPackage(packages, 3600, 69.99);
-                } else if (gems >= 1800) {
+                } else if (arcs >= 1800) {
                     totalCost += 34.99;
-                    gems -= 1800;
+                    arcs -= 1800;
                     addPackage(packages, 1800, 34.99);
-                } else if (gems >= 700) {
+                } else if (arcs >= 700) {
                     totalCost += 13.99;
-                    gems -= 700;
+                    arcs -= 700;
                     addPackage(packages, 700, 13.99);
-                } else if (gems >= 330) {
+                } else if (arcs >= 330) {
                     totalCost += 6.99;
-                    gems -= 330;
+                    arcs -= 330;
                     addPackage(packages, 330, 6.99);
                 } else {
                     totalCost += 1.39;
-                    gems -= 60;
+                    arcs -= 60;
                     addPackage(packages, 60, 1.39);
                 }
             }
             return { cost: totalCost, packages: packages };
         }
 
-        function addPackage(packages, gems, price) {
-            const existingPackage = packages.find(pkg => pkg.gems === gems && pkg.price === price);
+        function addPackage(packages, arcs, price) {
+            const existingPackage = packages.find(pkg => pkg.arcs === arcs && pkg.price === price);
             if (existingPackage) {
                 existingPackage.count++;
             } else {
-                packages.push({ gems: gems, price: price, count: 1 });
+                packages.push({ arcs: arcs, price: price, count: 1 });
             }
+        }
+
+        function calculateArcsNeeded() {
+            const arcTarget = parseInt(document.getElementById("arcTarget").value);
+
+            const averageResult = calculateArcRolls(arcTarget, "average");
+            const luckyResult = calculateArcRolls(arcTarget, "lucky");
+            const unluckyResult = calculateArcRolls(arcTarget, "unlucky");
+
+            let resultText = `<br><div><strong>Arcs of Destiny Calculation:</strong></div>`;
+            resultText += `<div>Target Arcs of Destiny: ${arcTarget}</div>`;
+            resultText += `<div>Average Pray Chances: ${averageResult.rolls} (Cost: CAD ${averageResult.cost.toFixed(2)})</div>`;
+            resultText += `<div>Lucky Pray Chances: ${luckyResult.rolls} (Cost: CAD ${luckyResult.cost.toFixed(2)})</div>`;
+            resultText += `<div>Unlucky Pray Chances: ${unluckyResult.rolls} (Cost: CAD ${unluckyResult.cost.toFixed(2)})</div>`;
+
+            document.getElementById("result").innerHTML = resultText;
+        }
+
+        function calculateArcRolls(arcTarget, scenario) {
+            let rolls = 0;
+            let totalArcs = 0;
+
+            while (totalArcs < arcTarget) {
+                const random = Math.random() * 100;
+
+                if (random <= 1.5) {
+                    totalArcs += 40;
+                    rolls += scenario === "lucky" ? 70 : scenario === "unlucky" ? 100 : 90;
+                } else if (random <= 1.5 + 35.9) {
+                    const item = getRandomItem(purpleItems);
+                    totalArcs += purplePets.includes(item) ? 3 : 2;
+                    rolls += scenario === "lucky" ? 7 : scenario === "unlucky" ? 13 : 10;
+                } else {
+                    totalArcs += 1;
+                    rolls += 1;
+                }
+            }
+
+            const { cost } = calculateCost(rolls * 90);
+            return { rolls, cost };
         }
     </script>
 </body>
